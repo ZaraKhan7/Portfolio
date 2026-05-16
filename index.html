@@ -1,130 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Luméra Beauty</title>
+<meta charset="UTF-8">
+<title>Quiz App</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, Arial;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(circle at top, #1e293b, #0b1220, #020617);
+    }
+
+    .card {
+        width: 420px;
+        padding: 25px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        text-align: center;
+    }
+
+    .title {
+        font-size: 18px;
+        color: #38bdf8;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .progress {
+        width: 100%;
+        height: 8px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #38bdf8, #a78bfa, #22c55e);
+        transition: 0.3s;
+    }
+
+    /* QUESTION */
+    .question {
+        font-size: 20px;
+        font-weight: 600;
+        color: #e5e7eb;
+        margin-bottom: 18px;
+    }
+
+    .options button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.05);
+        color: white;
+        cursor: pointer;
+        transition: 0.25s;
+        font-size: 15px;
+    }
+
+    .options button:hover {
+        transform: scale(1.03);
+        background: rgba(56,189,248,0.15);
+        border-color: #38bdf8;
+    }
+
+    /* STATES */
+    .correct {
+        background: linear-gradient(90deg, #22c55e, #16a34a) !important;
+        border: none;
+    }
+
+    .wrong {
+        background: linear-gradient(90deg, #ef4444, #dc2626) !important;
+        border: none;
+    }
+
+    .footer {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .score {
+        color: #22c55e;
+        font-weight: bold;
+    }
+
+    .btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: linear-gradient(90deg, #38bdf8, #a78bfa);
+        color: black;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(56,189,248,0.4);
+    }
+
+</style>
 </head>
 
 <body>
 
-<header class="navbar">
-  <h2 class="logo">Luméra</h2>
+<div class="card">
 
-  <ul class="nav-links">
-    <li><a href="#">Home</a></li>
-    <li><a href="#products">Products</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+    <div class="title">🔥 Quiz Challenge</div>
 
-  <button class="nav-btn">Shop Now</button>
-</header>
-
-<section class="hero">
-
-  <div class="hero-text">
-    <span class="tag">Luxury Skincare Collection</span>
-
-    <h1>Glow Naturally<br>Feel Powerful</h1>
-
-    <p>Premium skincare designed for hydration, glow, and healthy skin.</p>
-
-    <div class="hero-buttons">
-      <button class="primary-btn">Explore</button>
-      <button class="secondary-btn">Learn More</button>
-    </div>
-  </div>
-
-  <div class="hero-image">
-    <img src="https://images.unsplash.com/photo-1612810436541-336d9d2c3f1b" alt="">
-  </div>
-
-</section>
-
-<section class="features">
-
-  <div class="feature-card">
-    <h3>Dermatologist Tested</h3>
-    <p>Safe for all skin types</p>
-  </div>
-
-  <div class="feature-card">
-    <h3>Natural Ingredients</h3>
-    <p>Chemical-free skincare</p>
-  </div>
-
-  <div class="feature-card">
-    <h3>Luxury Results</h3>
-    <p>Glow like never before</p>
-  </div>
-
-</section>
-
-<section class="products" id="products">
-  <h2>Best Sellers</h2>
-
-  <div class="product-grid">
-
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1617897903246-719242758050">
-      <h3>Hydra Serum</h3>
-      <p>Deep hydration</p>
-      <button>Buy Now</button>
+    <div class="progress">
+        <div class="bar" id="bar"></div>
     </div>
 
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be">
-      <h3>Vitamin Cream</h3>
-      <p>Brightening glow</p>
-      <button>Buy Now</button>
+    <div class="question" id="q">Loading...</div>
+
+    <div class="options" id="options"></div>
+
+    <div class="footer">
+        <div class="score" id="score">Score: 0</div>
+        <button class="btn" onclick="restart()">Restart</button>
     </div>
 
-    <div class="product-card">
-     <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=800&q=80" alt="Cleanser">
-      <h3>Cleanser</h3>
-      <p>Gentle wash</p>
-      <button>Buy Now</button>
-    </div>
+</div>
 
-  </div>
-</section>
+<script>
+const data = [
+    {q:"DOM stands for?", o:["Data Object Model","Document Object Model","Digital Object Model","None"], a:"Document Object Model"},
+    {q:"JS runs in?", o:["Browser","Server","Cloud","Kernel"], a:"Browser"},
+    {q:"Variable keyword?", o:["var","int","string","define"], a:"var"},
+    {q:"Array symbol?", o:["[]","{}","()","<>"], a:"[]"},
+    {q:"CSS used for?", o:["Styling","Logic","Database","API"], a:"Styling"},
+    {q:"HTML full form?", o:["Hyper Text Markup Language","None","High Text","Markup"], a:"Hyper Text Markup Language"},
+    {q:"JS extension?", o:[".js",".css",".html",".java"], a:".js"},
+    {q:"Loop keyword?", o:["for","if","var","let"], a:"for"},
+    {q:"DOM is part of?", o:["HTML","CSS","JS","All"], a:"HTML"},
+    {q:"JS created by?", o:["Netscape","Google","Microsoft","Apple"], a:"Netscape"}
+];
 
-<section class="about" id="about">
-  <h2>About Luméra</h2>
-  <p>We believe skincare is self-care and confidence.</p>
-</section>
+let i = 0;
+let score = 0;
 
-<section class="testimonial">
-  <div class="testimonial-box">
-    <p>“My skin has never looked better!”</p>
-    <h4>- Happy Customer</h4>
-  </div>
-</section>
+const q = document.getElementById("q");
+const opt = document.getElementById("options");
+const bar = document.getElementById("bar");
+const scoreEl = document.getElementById("score");
 
-<section class="newsletter">
-  <h2>Join Glow Club</h2>
+function load(){
+    let d = data[i];
+    q.innerText = d.q;
+    opt.innerHTML = "";
 
-  <div class="newsletter-form">
-    <input type="email" placeholder="Enter email">
-    <button>Subscribe</button>
-  </div>
-</section>
+    d.o.forEach(x=>{
+        let b = document.createElement("button");
+        b.innerText = x;
 
-<footer id="contact">
-  <h2>Luméra</h2>
+        b.onclick = () => {
+            document.querySelectorAll(".options button").forEach(btn=>btn.disabled=true);
 
-  <div class="footer-links">
-    <a href="#">Instagram</a>
-    <a href="#">Facebook</a>
-    <a href="#">TikTok</a>
-  </div>
+            if(x === d.a){
+                b.classList.add("correct");
+                score++;
+            } else {
+                b.classList.add("wrong");
+            }
 
-  <p>© 2026 Luméra Beauty</p>
-</footer>
+            scoreEl.innerText = "Score: " + score;
+
+            setTimeout(()=>{
+                i++;
+                if(i < data.length){
+                    load();
+                } else {
+                    q.innerText = "🎉 Completed!";
+                    opt.innerHTML = `<h2 style="color:#22c55e">Score: ${score}/${data.length}</h2>`;
+                }
+            }, 600);
+        };
+
+        opt.appendChild(b);
+    });
+
+    bar.style.width = (i / data.length) * 100 + "%";
+}
+
+function restart(){
+    i = 0;
+    score = 0;
+    scoreEl.innerText = "Score: 0";
+    load();
+}
+
+load();
+</script>
 
 </body>
 </html>
